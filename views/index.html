@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/jsnlog/2.28.0/jsnlog.min.js"></script>
+</head>
+<body>
+  <script>
+    var ajaxAppender=JL.createAjaxAppender('ajaxAppender');
+    ajaxAppender.setOptions({
+      url: '/log'
+    })
+var consoleAppender=JL.createConsoleAppender('consoleAppender');
+var mylogger = JL("mylogger");
+
+mylogger.setOptions({"appenders": [ajaxAppender,consoleAppender]});
+    window.onload = () => {
+      console.log('console.log~~')
+      mylogger.info("log message");
+
+      var test = undefined
+      console.log('test:', test.length)
+
+      console.log('after error')
+    }
+
+    // if (window && !window.onerror) {
+    window.onerror = function (errorMsg, url, lineNumber, column, errorObj) {
+      console.log('errorMsg:', errorMsg)
+      console.log('url:', url)
+      console.log('lineNumber:', lineNumber)
+      console.log('column:', column)
+      console.log('errorObj:', errorObj)
+      mylogger.fatalException({
+            "msg": "Uncaught Exception",
+            "errorMsg": errorMsg, "url": url,
+            "line number": lineNumber, "column": column
+        }, errorObj);
+
+        return false;
+    }
+// }
+  </script>
+</body>
+</html>
